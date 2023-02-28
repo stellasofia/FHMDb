@@ -19,6 +19,7 @@ public class HomeController implements Initializable {
     @FXML
     public JFXButton searchBtn;
 
+
     @FXML
     public TextField searchField;
 
