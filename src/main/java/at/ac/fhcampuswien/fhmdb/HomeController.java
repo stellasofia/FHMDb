@@ -12,6 +12,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -43,23 +45,38 @@ public class HomeController implements Initializable {
         movieListView.setItems(observableMovies);   // set data of observable list to list view
         movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
 
-        // TODO add genre filter items with genreComboBox.getItems().addAll(...)
+        //TODO add genre filter items with genreComboBox.getItems().addAll(...)
         genreComboBox.setPromptText("Filter by Genre");
 
-        // TODO add event handlers to buttons and call the regarding methods
+        //TODO add event handlers to buttons and call the regarding methods
         // either set event handlers in the fxml file (onAction) or add them here
 
-        // Sort button example:
+        // Sort button:
         sortBtn.setOnAction(actionEvent -> {
             if(sortBtn.getText().equals("Sort (asc)")) {
-                // TODO sort observableMovies ascending
-                sortBtn.setText("Sort (desc)");
+                sortMoviesAscending(observableMovies);   //sort observableMovies ascending
+                sortBtn.setText("Sort (desc)");          // change display on button
             } else {
-                // TODO sort observableMovies descending
-                sortBtn.setText("Sort (asc)");
+                sortMoviesDescending(observableMovies);  // sort observableMovies descending
+                sortBtn.setText("Sort (asc)");           //change display on button
             }
         });
 
-
     }
+
+
+    public ObservableList<Movie> sortMoviesAscending(ObservableList<Movie> observableMovies){
+
+        Collections.sort(observableMovies, Comparator.comparing(Movie::getTitle));
+        return observableMovies;
+    }
+
+
+    public ObservableList<Movie> sortMoviesDescending(ObservableList<Movie> observableMovies) {
+
+        Collections.sort(observableMovies, Comparator.comparing(Movie::getTitle).reversed());
+
+        return observableMovies;
+    }
+
 }

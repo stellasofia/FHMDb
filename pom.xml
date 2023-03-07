@@ -20,6 +20,7 @@
             <artifactId>javafx-controls</artifactId>
             <version>17.0.2</version>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
@@ -32,6 +33,7 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -44,6 +46,8 @@
             <artifactId>jfoenix</artifactId>
             <version>9.0.10</version>
         </dependency>
+
+
     </dependencies>
 
     <build>
@@ -57,6 +61,8 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+
+
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
