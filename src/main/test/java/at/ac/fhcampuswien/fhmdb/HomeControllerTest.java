@@ -10,12 +10,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//Tutorial: how to mark as test directory -> file -> project structure
 class HomeControllerTest {
-
     @Test
-    void movie_list_is_sorted_ascending_if_button_is_pressed_when_it_displays_asc(){ //I tried my best to do it shorter, but I guess it is what it is
-
+    void movie_list_is_sorted_ascending_if_button_is_pressed_when_it_displays_asc(){
         //  Given:
         HomeController controller = new HomeController();
         //create list that is going to be tested:
@@ -42,7 +39,6 @@ class HomeControllerTest {
 
     @Test
     void movie_list_is_sorted_descending_if_button_is_pressed_when_it_displays_desc(){
-
         //  Given:
         HomeController controller = new HomeController();
         //create list that is going to be tested:
@@ -67,9 +63,10 @@ class HomeControllerTest {
         assertEquals(expected, actual);
     }
 
+    //TODO: 2 tests that check if GenreFilter is applied properly (no filter - after filter was set & specific filter test)
 
+    //TODO: test that checks if search query is applied properly
 
-
-
+    //TODO: test that checks if the output is valid, if search query AND genre filter is set
 
 }
