@@ -8,14 +8,13 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class HomeController implements Initializable {
     @FXML
@@ -42,11 +41,7 @@ public class HomeController implements Initializable {
         //  added genre filter items
         genreComboBox.setPromptText("Filter by Genre");
         // TODO: add the first field, called "NO FILTER" to undo filter
-        genreComboBox.getItems().addAll(
-                Genre.ACTION,Genre.ANIMATION,Genre.ADVENTURE,Genre.BIOGRAPHY,Genre.COMEDY, Genre.CRIME,
-                Genre.DOCUMENTARY, Genre.DRAMA, Genre.DOCUMENTARY, Genre.FAMILY, Genre.FANTASY, Genre.HISTORY,
-                Genre.HORROR, Genre.MUSICAL, Genre.MYSTERY, Genre.ROMANCE, Genre.SCIENCE_FICTION, Genre.SPORT,
-                Genre.THRILLER, Genre.WAR, Genre.WESTERN);
+        genreComboBox.getItems().addAll(Genre.values());
 
         //TODO add event handlers to buttons and call the regarding methods
         // either set event handlers in the fxml file (onAction) or add them here
@@ -61,7 +56,7 @@ public class HomeController implements Initializable {
                 sortBtn.setText("Sort (asc)");           //change display on button
             }
         });
-    }
+}
 
     // methods to sort ascending/descending
     public ObservableList<Movie> sortMoviesAscending(ObservableList<Movie> observableMovies) {
@@ -73,6 +68,42 @@ public class HomeController implements Initializable {
         return observableMovies;
     }
 
-    // TODO: add method, that uses the input of the search field (-> target: title OR description, set all ".toLowerCase()")
+
+    //filter for search query
+    public void filterQuery(ActionEvent actionEvent) {
+        // store the filtered movies
+        List<Movie> movieList = new ArrayList<>();
+        // Get the search query entered by the user
+        String searchQuery = searchField.getText().toLowerCase();
+        // Check if the title or description of the movie contains the search query
+        if (!searchQuery.isEmpty()) {
+            // If the search query is not empty, iterate through the observableMovies list and remove any movies that do not contain the search query in their title or description
+            for (Movie movieLoop : allMovies) {
+                String title = movieLoop.getTitle().toLowerCase();
+                String description = movieLoop.getDescription().toLowerCase();
+
+                // Check if the title or description of the movie contains the search query
+                if (title.contains(searchQuery) || description.contains(searchQuery)) {
+                    movieList.add(movieLoop); // Remove the movie from the observableMovies list
+                }
+            }
+            // Set the observableMovies list to the filtered movieList
+            observableMovies.setAll(movieList);
+
+            // Check if the sort button text contains "desc"
+            if (sortBtn.getText().contains("desc")) {
+                // If the sort button text contains "desc", sort the observableMovies list in ascending order
+                sortMoviesAscending(observableMovies);
+            } else {
+                // If the sort button text does not contain "desc", sort the observableMovies list in descending order
+                sortMoviesDescending(observableMovies);
+            }
+        }
+        else {
+            // If the search query is empty, set the observableMovies list to allMovies (i.e. display all movies)
+            observableMovies.setAll(allMovies);
+        }
+    }
+
     // TODO: add a method, that make it so that if you click on Filter that all the inputs(genre filter, search query are applied.
 }

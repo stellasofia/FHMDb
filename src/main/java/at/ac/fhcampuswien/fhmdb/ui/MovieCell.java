@@ -21,6 +21,7 @@ public class MovieCell extends ListCell<Movie> {
 
         if (empty || movie == null) {
             setText(null);
+            setGraphic(null); //necessary otherwise you will see everything double
         } else {
             this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());
