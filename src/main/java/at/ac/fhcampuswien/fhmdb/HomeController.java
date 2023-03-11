@@ -29,7 +29,7 @@ public class HomeController implements Initializable {
     public JFXButton sortBtn;
     public List<Movie> allMovies = Movie.initializeMovies();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
-
+    private final ObservableList<Movie> moviesByGenre = FXCollections.observableArrayList();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         observableMovies.addAll(allMovies);         // add dummy data to observable list
@@ -41,10 +41,17 @@ public class HomeController implements Initializable {
         //  added genre filter items
         genreComboBox.setPromptText("Filter by Genre");
         // TODO: add the first field, called "NO FILTER" to undo filter
+        genreComboBox.getItems().add("no filter");
         genreComboBox.getItems().addAll(Genre.values());
 
         //TODO add event handlers to buttons and call the regarding methods
         // either set event handlers in the fxml file (onAction) or add them here
+        searchBtn.setOnAction(actionEvent -> {
+            filterGenre();
+            filterQuery(moviesByGenre);
+
+        });
+
 
         // sort button:
         sortBtn.setOnAction(actionEvent -> {
@@ -56,6 +63,8 @@ public class HomeController implements Initializable {
                 sortBtn.setText("Sort (asc)");           //change display on button
             }
         });
+
+
 }
 
     // methods to sort ascending/descending
@@ -68,25 +77,53 @@ public class HomeController implements Initializable {
         return observableMovies;
     }
 
+    public void filterGenre(){
+        //clear list before adding the movies or else same movie will be added multiple times
+        observableMovies.clear();
+        moviesByGenre.clear();
+
+        //get the genre from combo box as string
+        String genreSelection = genreComboBox.getValue().toString();
+
+        if(!genreSelection.equals("no filter")) {
+            for (Movie movies : allMovies) {
+                List<Genre> genres = movies.getGenre();
+
+                if (genres.toString().contains(genreSelection)) {
+                    moviesByGenre.add(movies);
+                }
+            }
+            observableMovies.setAll(moviesByGenre);
+        } else {
+            moviesByGenre.setAll(allMovies);
+        }
+
+
+
+    }
 
     //filter for search query
-    public void filterQuery(ActionEvent actionEvent) {
+    public void filterQuery(ObservableList<Movie> moviesByGenre) {
+
         // store the filtered movies
-        List<Movie> movieList = new ArrayList<>();
+        ObservableList<Movie> movieList = FXCollections.observableArrayList();
+        movieList.clear();
+
         // Get the search query entered by the user
         String searchQuery = searchField.getText().toLowerCase();
         // Check if the title or description of the movie contains the search query
         if (!searchQuery.isEmpty()) {
             // If the search query is not empty, iterate through the observableMovies list and remove any movies that do not contain the search query in their title or description
-            for (Movie movieLoop : allMovies) {
+            for (Movie movieLoop : moviesByGenre) {
                 String title = movieLoop.getTitle().toLowerCase();
                 String description = movieLoop.getDescription().toLowerCase();
 
-                // Check if the title or description of the movie contains the search query
+                // Check if the title or description of the movie  contains the search query
                 if (title.contains(searchQuery) || description.contains(searchQuery)) {
                     movieList.add(movieLoop); // Remove the movie from the observableMovies list
                 }
             }
+
             // Set the observableMovies list to the filtered movieList
             observableMovies.setAll(movieList);
 
@@ -103,7 +140,10 @@ public class HomeController implements Initializable {
             // If the search query is empty, set the observableMovies list to allMovies (i.e. display all movies)
             observableMovies.setAll(allMovies);
         }
+
     }
 
     // TODO: add a method, that make it so that if you click on Filter that all the inputs(genre filter, search query are applied.
-}
+
+
+    }
