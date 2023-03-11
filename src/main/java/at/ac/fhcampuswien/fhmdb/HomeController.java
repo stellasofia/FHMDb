@@ -85,6 +85,7 @@ public class HomeController implements Initializable {
         //get the genre from combo box as string
         String genreSelection = genreComboBox.getValue().toString();
 
+        //if the genre is anything but "no filter", filter the movies with the selected genre
         if(!genreSelection.equals("no filter")) {
             for (Movie movies : allMovies) {
                 List<Genre> genres = movies.getGenre();
@@ -95,25 +96,30 @@ public class HomeController implements Initializable {
             }
             observableMovies.setAll(moviesByGenre);
         } else {
-            moviesByGenre.setAll(allMovies);
+            moviesByGenre.setAll(allMovies);            // if "no filter" is selected, show all movies, moviesByGenre will be passed on to filterQuery
         }
 
 
 
     }
 
-    //filter for search query
+    //this method takes the movies filtered by filterGenre and performs the search on those selected movies
     public void filterQuery(ObservableList<Movie> moviesByGenre) {
+
 
         // store the filtered movies
         ObservableList<Movie> movieList = FXCollections.observableArrayList();
+
         movieList.clear();
 
         // Get the search query entered by the user
         String searchQuery = searchField.getText().toLowerCase();
         // Check if the title or description of the movie contains the search query
-        if (!searchQuery.isEmpty()) {
-            // If the search query is not empty, iterate through the observableMovies list and remove any movies that do not contain the search query in their title or description
+
+        /*modified if condition --> if you just search multiple white spaces every movie will still pop up --> actually not that necessary
+                         reason --> searching multiple white spaces results in no movies
+        */
+        if(!searchField.getText().contains(" ")) {      //!searchQuery.isEmpty() replaced --> search field is never empty because of white space
             for (Movie movieLoop : moviesByGenre) {
                 String title = movieLoop.getTitle().toLowerCase();
                 String description = movieLoop.getDescription().toLowerCase();
@@ -122,24 +128,21 @@ public class HomeController implements Initializable {
                 if (title.contains(searchQuery) || description.contains(searchQuery)) {
                     movieList.add(movieLoop); // Remove the movie from the observableMovies list
                 }
-            }
 
-            // Set the observableMovies list to the filtered movieList
-            observableMovies.setAll(movieList);
 
-            // Check if the sort button text contains "desc"
-            if (sortBtn.getText().contains("desc")) {
-                // If the sort button text contains "desc", sort the observableMovies list in ascending order
-                sortMoviesAscending(observableMovies);
-            } else {
-                // If the sort button text does not contain "desc", sort the observableMovies list in descending order
-                sortMoviesDescending(observableMovies);
+                // Set the observableMovies list to the filtered movieList
+                observableMovies.setAll(movieList);
+
+                // Check if the sort button text contains "desc"
+                if (sortBtn.getText().contains("desc")) {
+                    // If the sort button text contains "desc", sort the observableMovies list in ascending order
+                    sortMoviesAscending(observableMovies);
+                } else {
+                    // If the sort button text does not contain "desc", sort the observableMovies list in descending order
+                    sortMoviesDescending(observableMovies);
+                }
             }
-        }
-        else {
-            // If the search query is empty, set the observableMovies list to allMovies (i.e. display all movies)
-            observableMovies.setAll(allMovies);
-        }
+        } //no need for else{show all movies}, since filterGenre takes care of that if "no filter" is selected
 
     }
 
