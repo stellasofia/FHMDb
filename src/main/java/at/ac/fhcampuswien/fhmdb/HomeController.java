@@ -65,7 +65,7 @@ public class HomeController implements Initializable {
         });
 
 
-}
+    }
 
     // methods to sort ascending/descending
     public ObservableList<Movie> sortMoviesAscending(ObservableList<Movie> observableMovies) {
@@ -149,4 +149,4 @@ public class HomeController implements Initializable {
     // TODO: add a method, that make it so that if you click on Filter that all the inputs(genre filter, search query are applied.
 
 
-    }
+}
