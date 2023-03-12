@@ -2,10 +2,12 @@ package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import com.jfoenix.controls.JFXButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +27,7 @@ class HomeControllerTest {
         exampleMovies.add(movie3);
 
         // When:
-        ObservableList<Movie> actual = controller.sortMoviesAscending(exampleMovies); //actual
+        ObservableList<Movie> actual = controller.sortMovies(exampleMovies, "Sort (asc)"); //actual
 
         // Then:
         //create expected list:
@@ -36,6 +38,7 @@ class HomeControllerTest {
         //test
         assertEquals(expected, actual);
     }
+
 
     @Test
     void movie_list_is_sorted_descending_if_button_is_pressed_when_it_displays_desc(){
@@ -51,7 +54,7 @@ class HomeControllerTest {
         exampleMovies.add(movie3);
 
         // When:
-        ObservableList<Movie> actual = controller.sortMoviesDescending(exampleMovies); //actual
+        ObservableList<Movie> actual = controller.sortMovies(exampleMovies, "Sort (desc)"); //actual
 
         // Then:
         //create expected list:
@@ -63,10 +66,64 @@ class HomeControllerTest {
         assertEquals(expected, actual);
     }
 
-    //TODO: 2 tests that check if GenreFilter is applied properly (no filter - after filter was set & specific filter test)
+    @Test
+    void movies_shown_when_genre_contains_genreString (){
 
-    //TODO: test that checks if search query is applied properly
+        //GIVEN
+        //search query and movie list
+        HomeController controller = new HomeController();
+        List <Movie> Movies = new ArrayList<>();
+        List<Movie> actualMovies;
 
-    //TODO: test that checks if the output is valid, if search query AND genre filter is set
+        Movie movie1 = new Movie("a-title1", "description1", List.of(Genre.ANIMATION));
+        Movie movie2 = new Movie("c-title2", "description2", List.of(Genre.ROMANCE));
+        Movie movie3 = new Movie("b-title3", "description3", List.of(Genre.ROMANCE));
+        Movies.add(movie1);
+        Movies.add(movie2);
+        Movies.add(movie3);
+
+        //WHEN
+        actualMovies = controller.filterGenre(Movies, "ROMANCE");
+
+
+        //THEN
+        //List or ObservableList contain movies with the search query
+        List<Movie> expectedMovies = new ArrayList<>();
+        expectedMovies.add(movie2);
+        expectedMovies.add(movie3);
+
+        assertEquals(expectedMovies, actualMovies);
+
+    }
+
+    @Test
+    void movies_shown_when_title_or_description_contain_searchQuery (){
+
+        //GIVEN
+        //search query and movie list
+        HomeController controller = new HomeController();
+        List <Movie> movies = new ArrayList<>();
+        List<Movie> actualMovies;
+
+        Movie movie1 = new Movie("a-title1", "description1", List.of(Genre.ANIMATION));
+        Movie movie2 = new Movie("c-title2", "dummy desc", List.of(Genre.ROMANCE));
+        Movie movie3 = new Movie("b-title3", "dummy text", List.of(Genre.ROMANCE));
+        movies.add(movie1);
+        movies.add(movie2);
+        movies.add(movie3);
+
+        //WHEN
+        actualMovies = controller.filterQuery(movies, "dummy");
+
+
+        //THEN
+        //List or ObservableList contain movies with the search query
+        List<Movie> expectedMovies = new ArrayList<>();
+        expectedMovies.add(movie2);
+        expectedMovies.add(movie3);
+
+        assertEquals(expectedMovies, actualMovies);
+
+    }
 
 }
