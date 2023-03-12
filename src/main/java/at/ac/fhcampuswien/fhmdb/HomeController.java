@@ -43,12 +43,13 @@ public class HomeController implements Initializable {
 
         //  added genre filter items
         genreComboBox.setPromptText("Filter by Genre");
+        genreComboBox.getItems().add("NO_FILTER");
         genreComboBox.getItems().addAll(Genre.values());
 
 
         //SEARCH BUTTON - ACTION EVENT
         searchBtn.setOnAction(actionEvent -> {
-            genreFilter(allMovies, genreComboBox.getValue().toString());
+            genreFilter(allMovies, genreComboBox.getValue() != null ? genreComboBox.getValue().toString() : "NO_FILTER");
             searchQuery(moviesByGenre, searchField.getText().toLowerCase());
             sortMovies(moviesByGenre,sortBtn.getText());
         });
@@ -68,7 +69,7 @@ public class HomeController implements Initializable {
             genreComboBox.getSelectionModel().clearSelection();
             initState();
         });
-}
+    }
 
     public ObservableList<Movie> sortMovies(ObservableList<Movie> observableMovies, String sortBtnText) {
 
@@ -87,10 +88,11 @@ public class HomeController implements Initializable {
         observableMovies.setAll(allMovies);
     }
 
-    public List<Movie> genreFilter(List<Movie> allMovies, String genreSelection){
+    public List<Movie> genreFilter(List<Movie> allMovies, String genreSelection) {
         //clear list before adding the movies or else same movie will be added multiple times
         moviesByGenre.clear();
 
+        if (!genreSelection.equals("NO_FILTER")) {
             for (Movie movies : allMovies) {
                 List<Genre> genres = movies.getGenre();
 
@@ -99,9 +101,12 @@ public class HomeController implements Initializable {
                 }
             }
             observableMovies.setAll(moviesByGenre);
-
+        } else {
+            moviesByGenre.setAll(allMovies);// if "no filter" is selected, show all movies, moviesByGenre will be passed on to filterQuery
+        }
         return moviesByGenre;
     }
+
 
     public List<Movie> searchQuery(List<Movie> moviesByGenre, String searchQuery) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList();
@@ -124,3 +129,4 @@ public class HomeController implements Initializable {
         return movieList;
     }
 }
+
